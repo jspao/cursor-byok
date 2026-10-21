@@ -82,6 +82,10 @@ GPT 系列建议使用 **Responses API**。如果使用 Chat Completions，可�
 
 保存配置后运行 **测试**，确认地址、协议、API Key、模型标识和流式响应都正常，再在 Cursor 中使用该模型。
 
+模型测试成功只说明模型服务调用成功，不代表 Cursor Agent 的协议、工具调用和多轮对话已经通过验证。若 Cursor 报 `ConversationStateStructure.file_states` 或 `summary` 的 protobuf 解码错误，而模型测试正常，应先检查 Cursor 到本地网关的协议通道。
+
+Cursor 3.26 的本地 Agent 循环会通过共用的 Bidi 通道发送 `RunInferenceClientMessage`；本网关当前处理的是 `AgentClientMessage`。网关会在 Statsig 配置中关闭 `agent_host_local_loop`，让 Cursor 使用支持的 Agent 通道。更新网关后，请完全退出并重新启动 Cursor，再新开一个对话验证。
+
 ## TAB 补全服务
 
 Cursor 的 Tab 补全由独立的 TAB 服务处理，不经过模型通道。你可以在 **系统设置 → TAB 设置** 中选择以下模式：
